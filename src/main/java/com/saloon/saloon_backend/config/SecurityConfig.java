@@ -2,6 +2,7 @@ package com.saloon.saloon_backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,6 +20,8 @@ public class SecurityConfig {
                 // allow health endpoint + allow everything temporarily
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/health").permitAll()
+                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 // keep default login form for now
