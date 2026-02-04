@@ -1,6 +1,8 @@
 package com.saloon.saloon_backend.controller;
 
 import com.saloon.saloon_backend.dto.LoginRequest;
+import com.saloon.saloon_backend.dto.LoginResponse;
+import com.saloon.saloon_backend.security.JwtUtil;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +18,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody LoginRequest request) {
 
         Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.email, request.password
-                )
+                new UsernamePasswordAuthenticationToken(request.email, request.password)
         );
 
-        return "LOGIN SUCCESS";
+        String token = JwtUtil.generateToken(request.email);
+        return new LoginResponse(token);
     }
 }
