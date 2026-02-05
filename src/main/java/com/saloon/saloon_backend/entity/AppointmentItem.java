@@ -17,7 +17,7 @@ public class AppointmentItem {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "service_id", nullable = false)
-    private Service service;
+    private SalonService service;
 
     @Column(name = "duration_min", nullable = false)
     private Integer durationMin;
@@ -32,8 +32,8 @@ public class AppointmentItem {
     public Appointment getAppointment() { return appointment; }
     public void setAppointment(Appointment appointment) { this.appointment = appointment; }
 
-    public Service getService() { return service; }
-    public void setService(Service service) { this.service = service; }
+    public SalonService getService() { return service; }
+    public void setService(SalonService service) { this.service = service; }
 
     public Integer getDurationMin() { return durationMin; }
     public void setDurationMin(Integer durationMin) { this.durationMin = durationMin; }
