@@ -1,10 +1,7 @@
 package com.saloon.saloon_backend.entity;
 
-import com.saloon.saloon_backend.entity.enums.AppointmentStatus;
 import jakarta.persistence.*;
-
 import java.time.OffsetDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "appointments")
@@ -14,11 +11,13 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    // client user
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private User client;
 
-    @ManyToOne(optional = false)
+    // stylist user
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stylist_id", nullable = false)
     private User stylist;
 
@@ -28,17 +27,31 @@ public class Appointment {
     @Column(name = "end_ts", nullable = false)
     private OffsetDateTime endTs;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus status;
-
-    private String notes;
+    @Column(name = "status", nullable = false)
+    private String status = "BOOKED"; // BOOKED, CANCELLED, COMPLETED
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL)
-    private List<AppointmentItem> items;
+    public Appointment() {}
 
-    // getters & setters
+    public Long getId() { return id; }
+
+    public User getClient() { return client; }
+    public void setClient(User client) { this.client = client; }
+
+    public User getStylist() { return stylist; }
+    public void setStylist(User stylist) { this.stylist = stylist; }
+
+    public OffsetDateTime getStartTs() { return startTs; }
+    public void setStartTs(OffsetDateTime startTs) { this.startTs = startTs; }
+
+    public OffsetDateTime getEndTs() { return endTs; }
+    public void setEndTs(OffsetDateTime endTs) { this.endTs = endTs; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public OffsetDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
 }
