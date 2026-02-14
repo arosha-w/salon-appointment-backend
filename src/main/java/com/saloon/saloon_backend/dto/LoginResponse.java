@@ -1,9 +1,14 @@
 package com.saloon.saloon_backend.dto;
 
 public class LoginResponse {
-    public String token;
+    private String token;
+    private String role;
 
-    public LoginResponse(String token) {
+    public LoginResponse(String token, String role) {
         this.token = token;
+        this.role = String.valueOf(role);
     }
+
+    public String getToken() { return token; }
+    public String getRole() { return role; }
 }
