@@ -1,0 +1,160 @@
+package com.saloon.saloon_backend.controller;
+
+import com.saloon.saloon_backend.dto.ClientAppointmentHistoryDTO;
+import com.saloon.saloon_backend.dto.StylistDTO;
+import com.saloon.saloon_backend.entity.Appointment;
+import com.saloon.saloon_backend.entity.StylistProfile;
+import com.saloon.saloon_backend.entity.User;
+import com.saloon.saloon_backend.repository.AppointmentRepository;
+import com.saloon.saloon_backend.repository.StylistProfileRepository;
+import com.saloon.saloon_backend.repository.UserRepository;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
+public class ClientController {
+
+    private final StylistProfileRepository stylistProfileRepository;
+    private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
+
+    public ClientController(
+            StylistProfileRepository stylistProfileRepository,
+            UserRepository userRepository,
+            AppointmentRepository appointmentRepository
+    ) {
+        this.stylistProfileRepository = stylistProfileRepository;
+        this.userRepository = userRepository;
+        this.appointmentRepository = appointmentRepository;
+    }
+
+    // ✅ PUBLIC: anyone can fetch stylists (NO token required)
+    @GetMapping("/stylists")
+    public ResponseEntity<List<StylistDTO>> getAllStylists() {
+        List<StylistProfile> profiles = stylistProfileRepository.findAvailableStylists();
+
+        List<StylistDTO> dtos = profiles.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(dtos);
+    }
+
+    // ✅ CLIENT ONLY: Get client stats
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/client/stats")
+    public ResponseEntity<Map<String, Object>> getClientStats(Authentication auth) {
+        String email = auth.getName();
+        User client = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+
+        // Get all completed appointments for this client
+        List<Appointment> completedAppointments = appointmentRepository.findByClientId(client.getId())
+                .stream()
+                .filter(a -> "COMPLETED".equals(a.getStatus()))
+                .collect(Collectors.toList());
+
+        // Calculate stats
+        int totalVisits = completedAppointments.size();
+
+        BigDecimal totalSpent = completedAppointments.stream()
+                .map(Appointment::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Simple loyalty points calculation (1 point per dollar spent)
+        int loyaltyPoints = totalSpent.intValue();
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalVisits", totalVisits);
+        stats.put("totalSpent", totalSpent.doubleValue());
+        stats.put("loyaltyPoints", loyaltyPoints);
+        stats.put("memberSince", client.getCreatedAt().toLocalDate().toString());
+
+        return ResponseEntity.ok(stats);
+    }
+
+    // ✅ CLIENT ONLY: Get appointment history (COMPLETED appointments only)
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/client/history")
+    public ResponseEntity<List<ClientAppointmentHistoryDTO>> getAppointmentHistory(Authentication auth) {
+        String email = auth.getName();
+        User client = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+
+        // Get all COMPLETED appointments, sorted by date (newest first)
+        List<Appointment> completedAppointments = appointmentRepository.findByClientId(client.getId())
+                .stream()
+                .filter(a -> "COMPLETED".equals(a.getStatus()))
+                .sorted((a, b) -> b.getStartTs().compareTo(a.getStartTs())) // Newest first
+                .collect(Collectors.toList());
+
+        List<ClientAppointmentHistoryDTO> history = completedAppointments.stream()
+                .map(this::mapToHistoryDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(history);
+    }
+
+    // ✅ CLIENT ONLY: Get client profile
+    @PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/client/profile")
+    public ResponseEntity<Map<String, Object>> getClientProfile(Authentication auth) {
+        String email = auth.getName();
+        User client = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Client not found"));
+
+        Map<String, Object> profile = new HashMap<>();
+        profile.put("email", email);
+        profile.put("name", client.getFullName());
+        profile.put("phone", client.getPhone());
+
+        return ResponseEntity.ok(profile);
+    }
+
+    // -------------------------
+    // Helper mappers
+    // -------------------------
+
+    private StylistDTO mapToDTO(StylistProfile profile) {
+        StylistDTO dto = new StylistDTO();
+        dto.setId(profile.getUser().getId());
+        dto.setName(profile.getUser().getFullName());
+        dto.setEmail(profile.getUser().getEmail());
+        dto.setSpecialties(profile.getSpecialties());
+        dto.setExperienceYears(profile.getExperienceYears());
+        dto.setBio(profile.getBio());
+        dto.setRating(profile.getRating());
+        dto.setTotalReviews(profile.getTotalReviews());
+        dto.setIsAvailable(profile.getIsAvailable());
+        return dto;
+    }
+
+    private ClientAppointmentHistoryDTO mapToHistoryDTO(Appointment appointment) {
+        ClientAppointmentHistoryDTO dto = new ClientAppointmentHistoryDTO();
+        dto.setId(appointment.getId());
+        dto.setDate(appointment.getStartTs().toString());
+        dto.setStylistName(appointment.getStylist().getFullName());
+        dto.setAmount(appointment.getTotalPrice().doubleValue());
+        dto.setStatus(appointment.getStatus());
+
+        // Get service names from appointment items
+        String serviceName = appointment.getItems().stream()
+                .map(item -> item.getService().getName())
+                .collect(Collectors.joining(", "));
+        dto.setServiceName(serviceName);
+
+        return dto;
+    }
+}
