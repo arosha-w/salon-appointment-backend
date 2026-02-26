@@ -1,48 +1,49 @@
 package com.saloon.saloon_backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "stylist_profiles")
 public class StylistProfile {
 
     @Id
-    @Column(name = "user_id")
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @OneToOne(optional = false)
-    @MapsId
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(name = "display_name")
-    private String displayName;
+    @Column(columnDefinition = "TEXT[]")
+    private String[] specialties;
 
-    @Column(name = "specialties")
-    private String specialties;
+    @Column(name = "experience_years")
+    private Integer experienceYears;
 
-    @Column(name = "buffer_min", nullable = false)
-    private Integer bufferMin = 0;
+    @Column(columnDefinition = "TEXT")
+    private String bio;
 
-    public StylistProfile() {}
+    @Column(precision = 3, scale = 2)
+    private BigDecimal rating = BigDecimal.ZERO;
 
-    public Long getUserId() { return userId; }
+    @Column(name = "total_reviews")
+    private Integer totalReviews = 0;
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    @Column(name = "total_clients")
+    private Integer totalClients = 0;
 
-    public String getDisplayName() { return displayName; }
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
+    @Column(name = "total_revenue", precision = 10, scale = 2)
+    private BigDecimal totalRevenue = BigDecimal.ZERO;
 
-    public String getSpecialties() { return specialties; }
-    public void setSpecialties(String specialties) {
-        this.specialties = specialties;
-    }
+    @Column(name = "buffer_minutes")
+    private Integer bufferMinutes = 10;
 
-    public Integer getBufferMin() { return bufferMin; }
-    public void setBufferMin(Integer bufferMin) {
-        this.bufferMin = bufferMin;
-    }
+    @Column(name = "is_available")
+    private Boolean isAvailable = true;
 }
