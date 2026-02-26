@@ -1,8 +1,16 @@
 package com.saloon.saloon_backend.entity;
 
 import jakarta.persistence.*;
-import java.time.OffsetDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "appointments")
 public class Appointment {
@@ -11,12 +19,10 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // client user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private User client;
 
-    // stylist user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stylist_id", nullable = false)
     private User stylist;
@@ -27,31 +33,26 @@ public class Appointment {
     @Column(name = "end_ts", nullable = false)
     private OffsetDateTime endTs;
 
-    @Column(name = "status", nullable = false)
-    private String status = "BOOKED"; // BOOKED, CANCELLED, COMPLETED
+    @Column(nullable = false, length = 20)
+    private String status = "BOOKED";
+
+    @Column(name = "total_price", precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+
+    @Column(columnDefinition = "TEXT")
+    private String notes;
 
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    public Appointment() {}
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt = OffsetDateTime.now();
 
-    public Long getId() { return id; }
+    @OneToMany(mappedBy = "appointment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<AppointmentItem> items = new ArrayList<>();
 
-    public User getClient() { return client; }
-    public void setClient(User client) { this.client = client; }
-
-    public User getStylist() { return stylist; }
-    public void setStylist(User stylist) { this.stylist = stylist; }
-
-    public OffsetDateTime getStartTs() { return startTs; }
-    public void setStartTs(OffsetDateTime startTs) { this.startTs = startTs; }
-
-    public OffsetDateTime getEndTs() { return endTs; }
-    public void setEndTs(OffsetDateTime endTs) { this.endTs = endTs; }
-
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-
-    public OffsetDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = OffsetDateTime.now();
+    }
 }
