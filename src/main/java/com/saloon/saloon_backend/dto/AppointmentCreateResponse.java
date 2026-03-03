@@ -1,15 +1,13 @@
 package com.saloon.saloon_backend.dto;
 
-public class AppointmentCreateResponse {
-    public Long appointmentId;
-    public String startTs;
-    public String endTs;
-    public String status;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-    public AppointmentCreateResponse(Long appointmentId, String startTs, String endTs, String status) {
-        this.appointmentId = appointmentId;
-        this.startTs = startTs;
-        this.endTs = endTs;
-        this.status = status;
-    }
+@Data
+@AllArgsConstructor
+public class AppointmentCreateResponse {
+    private Long appointmentId;
+    private String startTs;
+    private String endTs;
+    private String status;
 }

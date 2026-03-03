@@ -1,9 +1,11 @@
 package com.saloon.saloon_backend.dto;
 
+import lombok.Data;
 import java.util.List;
 
+@Data
 public class AppointmentCreateRequest {
-    public Long stylistId;
-    public String startTs;          // ISO string e.g. "2026-02-05T10:00:00+05:30"
-    public List<Long> serviceIds;   // [1,2,3]
+    private Long stylistId;
+    private String startTs;
+    private List<Long> serviceIds;
 }
