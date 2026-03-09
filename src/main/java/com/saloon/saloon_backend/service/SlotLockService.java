@@ -26,7 +26,7 @@ import java.util.Optional;
 public class SlotLockService {
 
     private final SlotLockRepository slotLockRepository;
-    private static final int LOCK_DURATION_MINUTES = 5;
+    private static final int LOCK_DURATION_MINUTES = 3;
 
     public SlotLockService(SlotLockRepository slotLockRepository) {
         this.slotLockRepository = slotLockRepository;
@@ -108,7 +108,7 @@ public class SlotLockService {
             response.setExpiresAt(savedLock.getExpiresAt().toString());
             response.setSecondsRemaining(LOCK_DURATION_MINUTES * 60);
             response.setSuccess(true);
-            response.setMessage("Slot locked successfully for 5 minutes");
+            response.setMessage("Slot locked successfully for 3 minutes");
 
             System.out.println("✅ Slot locked: " + request.getStylistId() +
                     " | " + date + " " + time + " | Session: " + request.getSessionId());
@@ -181,11 +181,11 @@ public class SlotLockService {
             }
 
             if (!locks.isEmpty()) {
-                System.out.println("✅ Extended " + locks.size() + " locks for session: " + sessionId);
+                System.out.println(" Extended " + locks.size() + " locks for session: " + sessionId);
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Error extending locks: " + e.getMessage());
+            System.err.println(" Error extending locks: " + e.getMessage());
         }
     }
 
@@ -211,7 +211,7 @@ public class SlotLockService {
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Error in cleanup task: " + e.getMessage());
+            System.err.println("git  Error in cleanup task: " + e.getMessage());
         }
     }
 
@@ -233,7 +233,7 @@ public class SlotLockService {
             SlotLock slotLock = lock.get();
             slotLock.setIsActive(false);
             slotLockRepository.save(slotLock);
-            System.out.println("✅ Force released lock: " + lockId);
+            System.out.println("Force released lock: " + lockId);
         }
     }
 }
