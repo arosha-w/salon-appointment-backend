@@ -237,6 +237,48 @@ public class AppointmentService {
         appointment.setStatus("CANCELLED");
         appointmentRepository.save(appointment);
     }
+    // Add reschedule method
+
+    @Transactional
+    public void rescheduleAppointment(Long appointmentId, String clientEmail, RescheduleRequestDTO request) {
+        // 1. Find appointment
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found"));
+
+        // 2. Verify ownership - only the client who booked can reschedule
+        if (!appointment.getClient().getEmail().equals(clientEmail)) {
+            throw new IllegalArgumentException("You can only reschedule your own appointments");
+        }
+
+        // 3. Parse new start time
+        OffsetDateTime newStartTs = OffsetDateTime.parse(request.getNewStartTs());
+
+        // 4. Calculate duration from original appointment
+        long durationMinutes = java.time.temporal.ChronoUnit.MINUTES.between(
+                appointment.getStartTs(),
+                appointment.getEndTs()
+        );
+        OffsetDateTime newEndTs = newStartTs.plusMinutes(durationMinutes);
+
+        // 5. Update stylist if provided
+        if (request.getNewStylistId() != null && !request.getNewStylistId().equals(appointment.getStylist().getId())) {
+            User newStylist = userRepository.findById(request.getNewStylistId())
+                    .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
+            appointment.setStylist(newStylist);
+        }
+
+        // 6. Update appointment times
+        appointment.setStartTs(newStartTs);
+        appointment.setEndTs(newEndTs);
+
+        // 7. Reset status to BOOKED (needs confirmation)
+        appointment.setStatus("BOOKED");
+
+        // 8. Save
+        appointmentRepository.save(appointment);
+
+        System.out.println("✅ Appointment " + appointmentId + " rescheduled to " + newStartTs);
+    }
 
     /**
      * Map Appointment entity to DTO
