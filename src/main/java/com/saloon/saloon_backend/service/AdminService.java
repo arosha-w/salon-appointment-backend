@@ -9,11 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +27,8 @@ public class AdminService {
     private final StylistProfileRepository stylistProfileRepository;
     private final SalonServiceRepository salonServiceRepository;
     private final DailyStatsRepository dailyStatsRepository;
+    private final BookingAnalyticsService analyticsService;
+
 
     private static final ZoneId SALON_TIMEZONE = ZoneId.of("Asia/Colombo");
 
@@ -32,13 +37,15 @@ public class AdminService {
             UserRepository userRepository,
             StylistProfileRepository stylistProfileRepository,
             SalonServiceRepository salonServiceRepository,
-            DailyStatsRepository dailyStatsRepository
+            DailyStatsRepository dailyStatsRepository,
+            BookingAnalyticsService analyticsService
     ) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
         this.stylistProfileRepository = stylistProfileRepository;
         this.salonServiceRepository = salonServiceRepository;
         this.dailyStatsRepository = dailyStatsRepository;
+        this.analyticsService = analyticsService;
     }
 
     // ✅ REMOVED - This method is not needed, use userRepository.countNewClientsThisMonth() directly
@@ -533,5 +540,41 @@ public class AdminService {
                     return revenue;
                 })
                 .collect(Collectors.toList());
+    }
+    public Map<String, Object> getPredictiveAnalytics() {
+        Map<String, Object> analytics = new HashMap<>();
+
+        // Get weekly peak hours
+        Map<String, List<PeakHourDTO>> weeklyPeaks = analyticsService.getWeeklyPeakHours();
+        analytics.put("weeklyPeakHours", weeklyPeaks);
+
+        // Get booking trends (last 30 days)
+        List<BookingTrendDTO> trends = analyticsService.getBookingTrends(30);
+        analytics.put("bookingTrends", trends);
+
+        // Get top busiest slots
+        List<PeakHourDTO> topSlots = analyticsService.getTopBusiestSlots();
+        analytics.put("topBusiestSlots", topSlots);
+
+        // Get today's capacity utilization
+        Map<String, Object> todayUtilization = analyticsService.getTodayCapacityUtilization();
+        analytics.put("todayCapacity", todayUtilization);
+
+        return analytics;
+    }
+
+    /**
+     * Get peak hours for specific day
+     */
+    public List<PeakHourDTO> getPeakHoursForDay(String dayName) {
+        DayOfWeek day = DayOfWeek.valueOf(dayName.toUpperCase());
+        return analyticsService.getPeakHoursForDay(day);
+    }
+
+    /**
+     * Force analytics recalculation
+     */
+    public String forceAnalyticsRecalculation() {
+        return analyticsService.forceRecalculation();
     }
 }
