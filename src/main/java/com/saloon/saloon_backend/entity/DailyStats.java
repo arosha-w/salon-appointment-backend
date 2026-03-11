@@ -33,12 +33,25 @@ public class DailyStats {
     @Column(name = "cancelled_appointments")
     private Integer cancelledAppointments = 0;
 
+    @Column(name = "avg_appointment_value", precision = 10, scale = 2)
+    private BigDecimal avgAppointmentValue = BigDecimal.ZERO;
+
     @Column(name = "total_revenue", precision = 10, scale = 2)
     private BigDecimal totalRevenue = BigDecimal.ZERO;
 
     @Column(name = "new_clients")
     private Integer newClients = 0;
 
+    @Column(name = "returning_clients")
+    private Integer returningClients = 0;
+
+    @Column(name = "peak_hour")
+    private Integer peakHour;
+
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
+
+    @Column(name = "updated_at")
+    private OffsetDateTime updatedAt = OffsetDateTime.now();
+
 }
