@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -37,15 +39,25 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Public routes (no authentication needed)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/services/**").permitAll()
-                        .requestMatchers("/api/stylists/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/stylists/**").permitAll()
 
+                        // Admin routes (ADMIN role only)
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/appointments/**").hasAnyRole("CLIENT", "STYLIST", "ADMIN")
+
+                        // Stylist routes (STYLIST role only)
+                        .requestMatchers("/api/stylist/**").hasRole("STYLIST")
+
+                        // Client routes (CLIENT role only)
                         .requestMatchers("/api/client/**").hasRole("CLIENT")
 
+                        // Appointment routes (CLIENT, STYLIST, or ADMIN)
+                        .requestMatchers("/api/appointments/**").hasAnyRole("CLIENT", "STYLIST", "ADMIN")
+
+                        // All other requests must be authenticated
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
@@ -57,4 +69,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
+    // ❌ REMOVED - passwordEncoder bean already exists in PasswordConfig.java
 }
