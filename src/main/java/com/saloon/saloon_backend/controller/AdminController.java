@@ -2,11 +2,13 @@ package com.saloon.saloon_backend.controller;
 
 import com.saloon.saloon_backend.dto.*;
 import com.saloon.saloon_backend.service.AdminService;
+import com.saloon.saloon_backend.service.CapacityMonitoringService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -15,10 +17,14 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final CapacityMonitoringService capacityMonitoringService;
 
-    public AdminController(AdminService adminService) {
+
+    public AdminController(AdminService adminService, CapacityMonitoringService capacityMonitoringService ) {
         this.adminService = adminService;
+        this.capacityMonitoringService = capacityMonitoringService;
     }
+
 
     // ==================== DASHBOARD ====================
 
@@ -148,5 +154,68 @@ public class AdminController {
     @PostMapping("/clients")
     public ResponseEntity<AdminClientDTO> createClient(@RequestBody ClientCreateRequest request) {
         return ResponseEntity.ok(adminService.createClient(request));
+    }
+    // Add to AdminController.java
+
+    /**
+     * Get predictive analytics
+     */
+    @GetMapping("/analytics/predictive")
+    public ResponseEntity<Map<String, Object>> getPredictiveAnalytics() {
+        return ResponseEntity.ok(adminService.getPredictiveAnalytics());
+    }
+
+    /**
+     * Get peak hours for specific day
+     */
+    @GetMapping("/analytics/peak-hours/{day}")
+    public ResponseEntity<List<PeakHourDTO>> getPeakHoursForDay(@PathVariable String day) {
+        return ResponseEntity.ok(adminService.getPeakHoursForDay(day));
+    }
+
+    /**
+     * Force analytics recalculation (admin only)
+     */
+    @PostMapping("/analytics/recalculate")
+    public ResponseEntity<String> forceRecalculation() {
+        String result = adminService.forceAnalyticsRecalculation();
+        return ResponseEntity.ok(result);
+    }
+
+    // ==================== CAPACITY ALERTS ====================
+
+    /**
+     * Get active capacity alerts
+     */
+    @GetMapping("/alerts/active")
+    public ResponseEntity<List<CapacityAlertDTO>> getActiveAlerts() {
+        return ResponseEntity.ok(capacityMonitoringService.getActiveAlerts());
+    }
+
+    /**
+     * Resolve alert
+     */
+    @PutMapping("/alerts/{id}/resolve")
+    public ResponseEntity<Void> resolveAlert(@PathVariable Long id) {
+        capacityMonitoringService.resolveAlert(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Force capacity monitoring (for testing)
+     */
+    @PostMapping("/alerts/monitor-now")
+    public ResponseEntity<String> forceCapacityMonitoring() {
+        capacityMonitoringService.monitorCapacity();
+        return ResponseEntity.ok("Capacity monitoring executed successfully");
+    }
+
+    /**
+     * Initialize slot configurations (run once during setup)
+     */
+    @PostMapping("/alerts/initialize-slots")
+    public ResponseEntity<String> initializeSlots() {
+        capacityMonitoringService.initializeSlotConfigurations();
+        return ResponseEntity.ok("Slot configurations initialized");
     }
 }
