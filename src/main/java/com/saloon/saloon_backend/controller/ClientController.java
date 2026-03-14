@@ -1,14 +1,16 @@
 package com.saloon.saloon_backend.controller;
 
+import com.saloon.saloon_backend.dto.BestTimeToBookDTO;
 import com.saloon.saloon_backend.dto.ClientAppointmentHistoryDTO;
 import com.saloon.saloon_backend.dto.StylistDTO;
+import com.saloon.saloon_backend.dto.TimeSlotAvailabilityDTO;
 import com.saloon.saloon_backend.entity.Appointment;
 import com.saloon.saloon_backend.entity.StylistProfile;
 import com.saloon.saloon_backend.entity.User;
 import com.saloon.saloon_backend.repository.AppointmentRepository;
 import com.saloon.saloon_backend.repository.StylistProfileRepository;
 import com.saloon.saloon_backend.repository.UserRepository;
-
+import com.saloon.saloon_backend.service.ClientBookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -29,15 +31,45 @@ public class ClientController {
     private final StylistProfileRepository stylistProfileRepository;
     private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
+    private final ClientBookingService clientBookingService;
 
     public ClientController(
             StylistProfileRepository stylistProfileRepository,
             UserRepository userRepository,
-            AppointmentRepository appointmentRepository
+            AppointmentRepository appointmentRepository,
+            ClientBookingService clientBookingService
     ) {
         this.stylistProfileRepository = stylistProfileRepository;
         this.userRepository = userRepository;
         this.appointmentRepository = appointmentRepository;
+        this.clientBookingService = clientBookingService;
+    }
+
+    @GetMapping("/booking/slots-with-demand")
+    public ResponseEntity<List<TimeSlotAvailabilityDTO>> getSlotsWithDemand(
+            @RequestParam(required = false) Long stylistId,
+            @RequestParam String date,
+            @RequestParam Integer durationMin
+    ) {
+        List<TimeSlotAvailabilityDTO> slots = clientBookingService
+                .getAvailableSlotsWithDemand(stylistId, date, durationMin);
+        return ResponseEntity.ok(slots);
+    }
+
+    /**
+     * Get best times to book (next 7 days)
+     */
+    @GetMapping("/booking/best-times")
+    public ResponseEntity<List<BestTimeToBookDTO>> getBestTimesToBook() {
+        return ResponseEntity.ok(clientBookingService.getBestTimesToBook());
+    }
+
+    /**
+     * Get peak hours information
+     */
+    @GetMapping("/booking/peak-hours-info")
+    public ResponseEntity<Map<String, Object>> getPeakHoursInfo() {
+        return ResponseEntity.ok(clientBookingService.getPeakHoursInfo());
     }
 
     // ✅ PUBLIC: anyone can fetch stylists (NO token required)
@@ -85,7 +117,10 @@ public class ClientController {
         return ResponseEntity.ok(stats);
     }
 
-    // ✅ CLIENT ONLY: Get appointment history (COMPLETED appointments only)
+    /**
+     * ✅ FIXED: Get appointment history (COMPLETED + CANCELLED appointments)
+     * This shows all past appointments regardless of status
+     */
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/history")
     public ResponseEntity<List<ClientAppointmentHistoryDTO>> getAppointmentHistory(Authentication auth) {
@@ -93,14 +128,17 @@ public class ClientController {
         User client = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
-        // Get all COMPLETED appointments, sorted by date (newest first)
-        List<Appointment> completedAppointments = appointmentRepository.findByClientId(client.getId())
+        // ✅ FIX: Get COMPLETED AND CANCELLED appointments
+        List<Appointment> historyAppointments = appointmentRepository.findByClientId(client.getId())
                 .stream()
-                .filter(a -> "COMPLETED".equals(a.getStatus()))
+                .filter(a ->
+                        "COMPLETED".equals(a.getStatus()) ||
+                                "CANCELLED".equals(a.getStatus())
+                )
                 .sorted((a, b) -> b.getStartTs().compareTo(a.getStartTs())) // Newest first
                 .collect(Collectors.toList());
 
-        List<ClientAppointmentHistoryDTO> history = completedAppointments.stream()
+        List<ClientAppointmentHistoryDTO> history = historyAppointments.stream()
                 .map(this::mapToHistoryDTO)
                 .collect(Collectors.toList());
 
@@ -146,6 +184,7 @@ public class ClientController {
         dto.setId(appointment.getId());
         dto.setDate(appointment.getStartTs().toString());
         dto.setStylistName(appointment.getStylist().getFullName());
+        dto.setStylistId(appointment.getStylist().getId()); // ✅ Add stylistId for rebook
         dto.setAmount(appointment.getTotalPrice().doubleValue());
         dto.setStatus(appointment.getStatus());
 
