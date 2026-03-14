@@ -211,7 +211,7 @@ public class SlotLockService {
             }
 
         } catch (Exception e) {
-            System.err.println("git  Error in cleanup task: " + e.getMessage());
+            System.err.println("git git status Error in cleanup task: " + e.getMessage());
         }
     }
 
