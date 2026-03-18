@@ -117,6 +117,7 @@ public class BookingAnalyticsService {
     /**
      * Calculate overall daily statistics
      */
+    @Transactional
     private void calculateDailyStats(LocalDate date, List<Appointment> appointments) {
         DailyStats stats = dailyStatsRepository.findByStatDate(date)
                 .orElse(new DailyStats());
@@ -228,6 +229,7 @@ public class BookingAnalyticsService {
     /**
      * Calculate standard deviation
      */
+    @Transactional
     private double calculateStandardDeviation(List<Double> values) {
         if (values.isEmpty()) return 0;
 
@@ -247,6 +249,7 @@ public class BookingAnalyticsService {
     /**
      * Get peak hours for a specific day
      */
+    @Transactional
     public List<PeakHourDTO> getPeakHoursForDay(DayOfWeek day) {
         List<PeakHourPrediction> predictions = predictionRepository
                 .findByDayOfWeek(day.getValue());
@@ -261,6 +264,7 @@ public class BookingAnalyticsService {
     /**
      * Get peak hours for entire week
      */
+    @Transactional
     public Map<String, List<PeakHourDTO>> getWeeklyPeakHours() {
         Map<String, List<PeakHourDTO>> weeklyPeaks = new LinkedHashMap<>();
 
@@ -275,6 +279,7 @@ public class BookingAnalyticsService {
     /**
      * Get booking trends for last N days
      */
+    @Transactional
     public List<BookingTrendDTO> getBookingTrends(int days) {
         LocalDate startDate = LocalDate.now().minusDays(days);
         List<DailyStats> stats = dailyStatsRepository.findByStatDateBetween(
@@ -299,6 +304,7 @@ public class BookingAnalyticsService {
     /**
      * Get top 10 busiest time slots across all days
      */
+    @Transactional
     public List<PeakHourDTO> getTopBusiestSlots() {
         List<PeakHourPrediction> predictions = predictionRepository
                 .findTop10ByOrderByPredictedBookingsDesc();
@@ -311,6 +317,7 @@ public class BookingAnalyticsService {
     /**
      * Get capacity utilization for today
      */
+    @Transactional
     public Map<String, Object> getTodayCapacityUtilization() {
         LocalDate today = LocalDate.now();
         OffsetDateTime dayStart = today.atStartOfDay(ZoneId.of("Asia/Colombo")).toOffsetDateTime();
@@ -377,6 +384,7 @@ public class BookingAnalyticsService {
     /**
      * Map entity to DTO
      */
+    @Transactional
     private PeakHourDTO mapToPeakHourDTO(PeakHourPrediction prediction) {
         return new PeakHourDTO(
                 prediction.getDayOfWeek(),

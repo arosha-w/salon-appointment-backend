@@ -14,6 +14,7 @@ import com.saloon.saloon_backend.service.ClientBookingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -45,6 +46,7 @@ public class ClientController {
         this.clientBookingService = clientBookingService;
     }
 
+    @Transactional
     @GetMapping("/booking/slots-with-demand")
     public ResponseEntity<List<TimeSlotAvailabilityDTO>> getSlotsWithDemand(
             @RequestParam(required = false) Long stylistId,
@@ -59,6 +61,7 @@ public class ClientController {
     /**
      * Get best times to book (next 7 days)
      */
+    @Transactional
     @GetMapping("/booking/best-times")
     public ResponseEntity<List<BestTimeToBookDTO>> getBestTimesToBook() {
         return ResponseEntity.ok(clientBookingService.getBestTimesToBook());
@@ -67,12 +70,14 @@ public class ClientController {
     /**
      * Get peak hours information
      */
+    @Transactional
     @GetMapping("/booking/peak-hours-info")
     public ResponseEntity<Map<String, Object>> getPeakHoursInfo() {
         return ResponseEntity.ok(clientBookingService.getPeakHoursInfo());
     }
 
     // ✅ PUBLIC: anyone can fetch stylists (NO token required)
+    @Transactional
     @GetMapping("/stylists")
     public ResponseEntity<List<StylistDTO>> getAllStylists() {
         List<StylistProfile> profiles = stylistProfileRepository.findAvailableStylists();
@@ -87,6 +92,7 @@ public class ClientController {
     // ✅ CLIENT ONLY: Get client stats
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/stats")
+    @Transactional
     public ResponseEntity<Map<String, Object>> getClientStats(Authentication auth) {
         String email = auth.getName();
         User client = userRepository.findByEmail(email)
@@ -123,6 +129,7 @@ public class ClientController {
      */
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/history")
+    @Transactional
     public ResponseEntity<List<ClientAppointmentHistoryDTO>> getAppointmentHistory(Authentication auth) {
         String email = auth.getName();
         User client = userRepository.findByEmail(email)
@@ -165,6 +172,7 @@ public class ClientController {
     // Helper mappers
     // -------------------------
 
+    @Transactional
     private StylistDTO mapToDTO(StylistProfile profile) {
         StylistDTO dto = new StylistDTO();
         dto.setId(profile.getUser().getId());
@@ -179,6 +187,7 @@ public class ClientController {
         return dto;
     }
 
+    @Transactional
     private ClientAppointmentHistoryDTO mapToHistoryDTO(Appointment appointment) {
         ClientAppointmentHistoryDTO dto = new ClientAppointmentHistoryDTO();
         dto.setId(appointment.getId());

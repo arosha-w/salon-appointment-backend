@@ -13,6 +13,7 @@ import com.saloon.saloon_backend.dto.SmartSlotRecommendationDTO;
 import com.saloon.saloon_backend.entity.*;
 import com.saloon.saloon_backend.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -47,6 +48,7 @@ public class SmartSchedulingService {
      * Get smart slot recommendations for rescheduling
      * Returns top 10 best slots based on multiple factors
      */
+    @Transactional
     public List<SmartSlotRecommendationDTO> getSmartRecommendations(
             Long originalAppointmentId,
             LocalDate preferredDate
@@ -100,6 +102,7 @@ public class SmartSchedulingService {
     /**
      * Evaluate a specific slot and calculate its recommendation score
      */
+    @Transactional
     private SmartSlotRecommendationDTO evaluateSlot(
             Appointment original,
             LocalDate date,
@@ -228,6 +231,7 @@ public class SmartSchedulingService {
     /**
      * Check if slot is available (not booked and not locked)
      */
+    @Transactional
     private boolean isSlotAvailable(
             Long stylistId,
             LocalDate date,
@@ -266,6 +270,7 @@ public class SmartSchedulingService {
     /**
      * Count existing bookings for a specific hour
      */
+    @Transactional
     private int countBookingsForSlot(Long stylistId, LocalDate date, int hour) {
         OffsetDateTime hourStart = OffsetDateTime.of(
                 date, LocalTime.of(hour, 0),
@@ -287,6 +292,7 @@ public class SmartSchedulingService {
     /**
      * Generate human-readable recommendation reason
      */
+    @Transactional
     private String generateReasonText(
             Map<String, Object> factors,
             LocalDate date,
@@ -339,6 +345,7 @@ public class SmartSchedulingService {
     /**
      * Get recommendations for a specific stylist and date range
      */
+    @Transactional
     public List<SmartSlotRecommendationDTO> getRecommendationsForStylist(
             Long stylistId,
             LocalDate startDate,

@@ -15,6 +15,7 @@ import com.saloon.saloon_backend.repository.UserRepository;
 import com.saloon.saloon_backend.entity.enums.UserRole;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -50,6 +51,7 @@ public class ClientBookingService {
     /**
      * Get available time slots with demand indicators for clients
      */
+    @Transactional
     public List<TimeSlotAvailabilityDTO> getAvailableSlotsWithDemand(
             Long stylistId,
             String dateStr,
@@ -125,6 +127,7 @@ public class ClientBookingService {
     /**
      * Get best times to book for next 7 days
      */
+    @Transactional
     public List<BestTimeToBookDTO> getBestTimesToBook() {
         List<BestTimeToBookDTO> bestTimes = new ArrayList<>();
         LocalDate today = LocalDate.now();
@@ -190,6 +193,7 @@ public class ClientBookingService {
     /**
      * Get peak hours warning for clients
      */
+    @Transactional
     public Map<String, Object> getPeakHoursInfo() {
         Map<String, Object> info = new HashMap<>();
 
@@ -217,6 +221,7 @@ public class ClientBookingService {
     }
 
     // Helper methods
+    @Transactional
     private int countBookingsInRange(Long stylistId, OffsetDateTime start, OffsetDateTime end) {
         return (int) appointmentRepository.findAll().stream()
                 .filter(apt -> apt.getStylist() != null && apt.getStylist().getId().equals(stylistId))
@@ -227,6 +232,7 @@ public class ClientBookingService {
                 .count();
     }
 
+    @Transactional
     private String calculateDemandLevel(double utilizationRate) {
         if (utilizationRate >= 0.9) return "CRITICAL";
         if (utilizationRate >= 0.7) return "HIGH";
@@ -234,6 +240,7 @@ public class ClientBookingService {
         return "LOW";
     }
 
+    @Transactional
     private String generateRecommendation(double utilizationRate, PeakHourPrediction prediction) {
         if (utilizationRate >= 0.9) {
             return "⚠️ Very busy - expect wait times";
@@ -246,6 +253,7 @@ public class ClientBookingService {
         }
     }
 
+    @Transactional
     private String generateBestTimeReason(double utilizationRate, int bookings) {
         if (utilizationRate < 0.3) {
             return "Quietest time of the day - minimal wait";
@@ -256,6 +264,7 @@ public class ClientBookingService {
         }
     }
 
+    @Transactional
     private String calculateExpectedWait(int predictedBookings) {
         if (predictedBookings >= 8) return "15-30 minutes";
         if (predictedBookings >= 6) return "10-15 minutes";
@@ -263,11 +272,13 @@ public class ClientBookingService {
         return "Minimal wait";
     }
 
+    @Transactional
     private String getDayName(int dayOfWeek) {
         String[] days = {"", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
         return dayOfWeek >= 1 && dayOfWeek <= 7 ? days[dayOfWeek] : "Unknown";
     }
 
+    @Transactional
     private SlotConfiguration createDefaultConfig(Integer dayOfWeek, Integer hourOfDay) {
         SlotConfiguration config = new SlotConfiguration();
         config.setDayOfWeek(dayOfWeek);

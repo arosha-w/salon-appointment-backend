@@ -61,6 +61,7 @@ public class CapacityMonitoringService {
     /**
      * Check capacity for specific date & hour
      */
+    @Transactional
     private void checkCapacityForHour(LocalDate date, int hour) {
 
         OffsetDateTime start = OffsetDateTime.of(
@@ -104,6 +105,7 @@ public class CapacityMonitoringService {
     /**
      * Create alert
      */
+    @Transactional
     private void createAlert(User stylist, LocalDate date, int hour, double usage) {
 
         CapacityAlert alert = new CapacityAlert();
@@ -130,6 +132,7 @@ public class CapacityMonitoringService {
     /**
      * Get slot configuration
      */
+    @Transactional
     private SlotConfiguration getSlotConfiguration(Integer dayOfWeek, Integer hourOfDay) {
 
         Optional<SlotConfiguration> optional =
@@ -143,6 +146,7 @@ public class CapacityMonitoringService {
     /**
      * Map entity to DTO
      */
+    @Transactional
     private CapacityAlertDTO mapToDTO(CapacityAlert alert) {
         CapacityAlertDTO dto = new CapacityAlertDTO();
         dto.setId(alert.getId());
@@ -161,6 +165,7 @@ public class CapacityMonitoringService {
     /**
      * Get all active alerts
      */
+    @Transactional
     public List<CapacityAlertDTO> getActiveAlerts() {
         return capacityAlertRepository
                 // ✅ Now this compiles because we added it to the repository
@@ -188,6 +193,7 @@ public class CapacityMonitoringService {
     /**
      * Create default slot configuration
      */
+    @Transactional
     private SlotConfiguration createDefaultConfig(Integer dayOfWeek, Integer hourOfDay) {
         SlotConfiguration config = new SlotConfiguration();
         config.setDayOfWeek(dayOfWeek);

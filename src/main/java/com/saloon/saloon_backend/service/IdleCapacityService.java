@@ -98,6 +98,7 @@ public class IdleCapacityService {
     /**
      * Count actual bookings for a specific hour
      */
+    @Transactional
     private int countBookings(Long stylistId, LocalDate date, int hour) {
         OffsetDateTime hourStart = OffsetDateTime.of(
                 date, LocalTime.of(hour, 0),
@@ -115,6 +116,7 @@ public class IdleCapacityService {
     /**
      * Get expected bookings from predictions
      */
+    @Transactional
     private int getExpectedBookings(DayOfWeek dayOfWeek, int hour) {
         Optional<PeakHourPrediction> prediction = predictionRepository
                 .findByDayOfWeekAndHourOfDay(dayOfWeek.getValue(), hour);
@@ -126,6 +128,7 @@ public class IdleCapacityService {
     /**
      * Determine alert severity level
      */
+    @Transactional
     private String determineAlertLevel(BigDecimal idlePercentage) {
         if (idlePercentage.compareTo(BigDecimal.valueOf(75)) >= 0) {
             return "CRITICAL";
@@ -141,6 +144,7 @@ public class IdleCapacityService {
     /**
      * Get unresolved idle capacity alerts
      */
+    @Transactional
     public List<IdleCapacityAlertDTO> getUnresolvedAlerts() {
         List<IdleCapacityAlert> alerts = alertRepository.findByIsResolvedFalseOrderByCreatedAtDesc();
         return alerts.stream()
@@ -151,6 +155,7 @@ public class IdleCapacityService {
     /**
      * Get alerts for a specific date range
      */
+    @Transactional
     public List<IdleCapacityAlertDTO> getAlertsForDateRange(LocalDate startDate, LocalDate endDate) {
         List<IdleCapacityAlert> alerts = alertRepository
                 .findByAlertDateBetweenAndIsResolvedFalse(startDate, endDate);
@@ -176,6 +181,7 @@ public class IdleCapacityService {
     /**
      * Convert entity to DTO
      */
+    @Transactional
     private IdleCapacityAlertDTO convertToDTO(IdleCapacityAlert alert) {
         IdleCapacityAlertDTO dto = new IdleCapacityAlertDTO();
         dto.setId(alert.getId());
@@ -203,6 +209,7 @@ public class IdleCapacityService {
     /**
      * Format hour as time slot string
      */
+    @Transactional
     private String formatTimeSlot(int hour) {
         LocalTime start = LocalTime.of(hour, 0);
         LocalTime end = start.plusHours(1);

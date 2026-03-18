@@ -5,6 +5,7 @@ import com.saloon.saloon_backend.service.AdminService;
 import com.saloon.saloon_backend.service.CapacityMonitoringService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -145,12 +146,14 @@ public class AdminController {
 
     // ==================== ANALYTICS ====================
 
+    @Transactional
     @GetMapping("/analytics")
     public ResponseEntity<AdminAnalyticsDTO> getAnalytics() {
         return ResponseEntity.ok(adminService.getAnalytics());
     }
 
 
+    @Transactional
     @PostMapping("/clients")
     public ResponseEntity<AdminClientDTO> createClient(@RequestBody ClientCreateRequest request) {
         return ResponseEntity.ok(adminService.createClient(request));

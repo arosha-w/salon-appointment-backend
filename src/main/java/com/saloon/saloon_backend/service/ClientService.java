@@ -26,6 +26,7 @@ public class ClientService {
         this.appointmentRepository = appointmentRepository;
     }
 
+    @Transactional
     public ClientProfileDTO getClientProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -94,6 +95,7 @@ public class ClientService {
         return getClientProfile(user.getEmail());
     }
 
+    @Transactional
     public ClientStatsDTO getClientStats(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -116,6 +118,7 @@ public class ClientService {
         return new ClientStatsDTO(totalVisits, totalSpent, loyaltyPoints, memberSince);
     }
 
+    @Transactional
     public List<AppointmentHistoryDTO> getAppointmentHistory(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -128,6 +131,7 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     private AppointmentHistoryDTO mapToHistoryDTO(Appointment appointment) {
         AppointmentHistoryDTO dto = new AppointmentHistoryDTO();
         dto.setId(appointment.getId());

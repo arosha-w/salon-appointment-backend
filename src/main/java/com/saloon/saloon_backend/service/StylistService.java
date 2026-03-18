@@ -35,6 +35,7 @@ public class StylistService {
     /**
      * Get dashboard statistics for stylist
      */
+    @Transactional
     public StylistDashboardStatsDTO getDashboardStats(String stylistEmail) {
         User stylist = userRepository.findByEmail(stylistEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
@@ -93,6 +94,7 @@ public class StylistService {
     /**
      * Get all appointments for stylist
      */
+    @Transactional
     public List<StylistAppointmentDTO> getAppointments(String stylistEmail) {
         User stylist = userRepository.findByEmail(stylistEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
@@ -111,6 +113,7 @@ public class StylistService {
     /**
      * Get today's appointments
      */
+    @Transactional
     public List<StylistAppointmentDTO> getTodayAppointments(String stylistEmail) {
         User stylist = userRepository.findByEmail(stylistEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
@@ -131,6 +134,7 @@ public class StylistService {
     /**
      * Get pending confirmations
      */
+    @Transactional
     public List<StylistAppointmentDTO> getPendingConfirmations(String stylistEmail) {
         User stylist = userRepository.findByEmail(stylistEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
@@ -237,6 +241,7 @@ public class StylistService {
     /**
      * Map entity to DTO
      */
+    @Transactional
     private StylistAppointmentDTO mapToDTO(Appointment appointment) {
         StylistAppointmentDTO dto = new StylistAppointmentDTO();
         dto.setId(appointment.getId());

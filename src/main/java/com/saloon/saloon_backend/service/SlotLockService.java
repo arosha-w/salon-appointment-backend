@@ -149,6 +149,7 @@ public class SlotLockService {
     /**
      * Check if a slot is currently locked
      */
+    @Transactional
     public boolean isSlotLocked(Long stylistId, LocalDate date, LocalTime time) {
         Optional<SlotLock> lock = slotLockRepository.findActiveLock(stylistId, date, time);
 
@@ -218,6 +219,7 @@ public class SlotLockService {
     /**
      * Get all active locks for a specific date (admin view)
      */
+    @Transactional
     public List<SlotLock> getActiveLocksForDate(Long stylistId, LocalDate date) {
         return slotLockRepository.findByStylistAndDate(stylistId, date);
     }

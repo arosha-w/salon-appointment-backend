@@ -40,6 +40,7 @@ public class AppointmentService {
     /**
      * Get available time slots for a stylist on a specific date
      */
+    @Transactional
     public List<AvailableSlotDTO> getAvailableSlots(Long stylistId, String date, Integer durationMin) {
         // Parse the date
         LocalDate requestedDate = LocalDate.parse(date);
@@ -91,6 +92,7 @@ public class AppointmentService {
     /**
      * Format time for display (e.g., "2:30 PM")
      */
+    @Transactional
     private String formatDisplayTime(OffsetDateTime dateTime) {
         return dateTime.format(DateTimeFormatter.ofPattern("h:mm a"));
     }
@@ -173,6 +175,7 @@ public class AppointmentService {
     /**
      * Get all appointments for a client
      */
+    @Transactional
     public List<AppointmentDTO> getClientAppointments(String clientEmail) {
         User client = userRepository.findByEmail(clientEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
@@ -187,6 +190,7 @@ public class AppointmentService {
     /**
      * Get upcoming appointments for a client
      */
+    @Transactional
     public List<AppointmentDTO> getUpcomingAppointments(String clientEmail) {
         User client = userRepository.findByEmail(clientEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
@@ -202,6 +206,7 @@ public class AppointmentService {
     /**
      * Get past appointments for a client
      */
+    @Transactional
     public List<AppointmentDTO> getPastAppointments(String clientEmail) {
         User client = userRepository.findByEmail(clientEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
@@ -283,6 +288,7 @@ public class AppointmentService {
     /**
      * Map Appointment entity to DTO
      */
+    @Transactional
     private AppointmentDTO mapToDTO(Appointment appointment) {
         AppointmentDTO dto = new AppointmentDTO();
         dto.setId(appointment.getId());

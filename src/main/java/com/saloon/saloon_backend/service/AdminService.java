@@ -53,6 +53,7 @@ public class AdminService {
 
     // ==================== DASHBOARD STATS ====================
 
+    @Transactional
     public AdminDashboardStatsDTO getDashboardStats() {
         // Total appointments today
         Integer totalAppointments = appointmentRepository.countTodayAppointments();
@@ -85,6 +86,7 @@ public class AdminService {
         );
     }
 
+    @Transactional
     private Integer getYesterdayAppointmentsCount() {
         OffsetDateTime yesterdayStart = LocalDate.now(SALON_TIMEZONE).minusDays(1)
                 .atStartOfDay(SALON_TIMEZONE).toOffsetDateTime();
@@ -93,6 +95,7 @@ public class AdminService {
         return appointmentRepository.findByDateRange(yesterdayStart, yesterdayEnd).size();
     }
 
+    @Transactional
     private String calculatePercentageChange(Integer oldValue, Integer newValue) {
         if (oldValue == 0) return "+100%";
         double change = ((newValue - oldValue) * 100.0) / oldValue;
@@ -101,6 +104,7 @@ public class AdminService {
 
     // ==================== APPOINTMENTS ====================
 
+    @Transactional
     public List<AdminAppointmentDTO> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAllOrderByStartTsDesc();
         return appointments.stream()
@@ -108,6 +112,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public List<AdminAppointmentDTO> getTodayAppointments() {
         List<Appointment> appointments = appointmentRepository.findTodayAppointments();
         return appointments.stream()
@@ -115,6 +120,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public AppointmentStatsDTO getAppointmentStats() {
         Integer todayTotal = appointmentRepository.countTodayAppointments();
         Integer confirmed = appointmentRepository.countTodayAppointmentsByStatus("CONFIRMED");
@@ -138,6 +144,7 @@ public class AdminService {
         appointmentRepository.deleteById(appointmentId);
     }
 
+    @Transactional
     private AdminAppointmentDTO mapToAdminAppointmentDTO(Appointment appointment) {
         AdminAppointmentDTO dto = new AdminAppointmentDTO();
         dto.setId(appointment.getId());
@@ -165,6 +172,7 @@ public class AdminService {
 
     // ==================== STYLISTS ====================
 
+    @Transactional
     public List<AdminStylistDTO> getAllStylists() {
         List<User> stylists = userRepository.findByRole(UserRole.STYLIST);
 
@@ -173,6 +181,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public AdminStylistDTO getStylistById(Long stylistId) {
         User stylist = userRepository.findById(stylistId)
                 .orElseThrow(() -> new IllegalArgumentException("Stylist not found"));
@@ -229,6 +238,7 @@ public class AdminService {
         userRepository.deleteById(stylistId);
     }
 
+    @Transactional
     private AdminStylistDTO mapToAdminStylistDTO(User stylist) {
         AdminStylistDTO dto = new AdminStylistDTO();
         dto.setId(stylist.getId());
@@ -257,6 +267,7 @@ public class AdminService {
 
     // ==================== CLIENTS ====================
 
+    @Transactional
     public List<AdminClientDTO> getAllClients() {
         List<User> clients = userRepository.findByRole(UserRole.CLIENT);
 
@@ -265,6 +276,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public AdminClientDTO getClientById(Long clientId) {
         User client = userRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
@@ -337,6 +349,7 @@ public class AdminService {
 
     // ==================== SERVICES ====================
 
+    @Transactional
     public List<AdminServiceDTO> getAllServices() {
         List<SalonService> services = salonServiceRepository.findAll();
 
@@ -345,6 +358,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public AdminServiceDTO getServiceById(Long serviceId) {
         SalonService service = salonServiceRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("Service not found"));
@@ -389,6 +403,7 @@ public class AdminService {
         salonServiceRepository.deleteById(serviceId);
     }
 
+    @Transactional
     private AdminServiceDTO mapToAdminServiceDTO(SalonService service) {
         AdminServiceDTO dto = new AdminServiceDTO();
         dto.setId(service.getId());
@@ -408,6 +423,7 @@ public class AdminService {
 
     // ==================== ANALYTICS ====================
 
+    @Transactional
     public AdminAnalyticsDTO getAnalytics() {
         AdminAnalyticsDTO analytics = new AdminAnalyticsDTO();
 
@@ -429,6 +445,7 @@ public class AdminService {
         return analytics;
     }
 
+    @Transactional
     private AdminAnalyticsDTO.RevenueStats getRevenueStats() {
         AdminAnalyticsDTO.RevenueStats stats = new AdminAnalyticsDTO.RevenueStats();
 
@@ -468,6 +485,7 @@ public class AdminService {
         return stats;
     }
 
+    @Transactional
     private List<AdminAnalyticsDTO.StylistPerformance> getTopStylists() {
         List<StylistProfile> profiles = stylistProfileRepository.findAll();
 
@@ -489,6 +507,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     private List<AdminAnalyticsDTO.ServicePerformance> getServicePerformance() {
         List<SalonService> services = salonServiceRepository.findAll();
 
@@ -504,6 +523,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     private AdminAnalyticsDTO.ClientInsights getClientInsights() {
         AdminAnalyticsDTO.ClientInsights insights = new AdminAnalyticsDTO.ClientInsights();
 
@@ -527,6 +547,7 @@ public class AdminService {
         return insights;
     }
 
+    @Transactional
     private List<AdminAnalyticsDTO.DailyRevenue> getRevenueTrend() {
         LocalDate sevenDaysAgo = LocalDate.now(SALON_TIMEZONE).minusDays(7);
         List<DailyStats> stats = dailyStatsRepository.findByStatDateAfterOrderByStatDateDesc(sevenDaysAgo);
@@ -541,6 +562,7 @@ public class AdminService {
                 })
                 .collect(Collectors.toList());
     }
+    @Transactional
     public Map<String, Object> getPredictiveAnalytics() {
         Map<String, Object> analytics = new HashMap<>();
 
@@ -566,6 +588,7 @@ public class AdminService {
     /**
      * Get peak hours for specific day
      */
+    @Transactional
     public List<PeakHourDTO> getPeakHoursForDay(String dayName) {
         DayOfWeek day = DayOfWeek.valueOf(dayName.toUpperCase());
         return analyticsService.getPeakHoursForDay(day);
@@ -574,6 +597,7 @@ public class AdminService {
     /**
      * Force analytics recalculation
      */
+    @Transactional
     public String forceAnalyticsRecalculation() {
         return analyticsService.forceRecalculation();
     }
