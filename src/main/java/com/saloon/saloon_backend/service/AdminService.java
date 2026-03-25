@@ -48,7 +48,7 @@ public class AdminService {
         this.analyticsService = analyticsService;
     }
 
-    // ✅ REMOVED - This method is not needed, use userRepository.countNewClientsThisMonth() directly
+    //  REMOVED - This method is not needed, use userRepository.countNewClientsThisMonth() directly
     // Lines 43-51 DELETED
 
     // ==================== DASHBOARD STATS ====================
@@ -530,7 +530,7 @@ public class AdminService {
         Integer totalClients = userRepository.countByRole(UserRole.CLIENT);
         insights.setTotalClients(totalClients);
 
-        // ✅ FIXED: Use the correct method from UserRepository
+        //  FIXED: Use the correct method from UserRepository
         Integer newThisMonth = userRepository.countNewClientsThisMonth();
         insights.setNewThisMonth(newThisMonth);
 
