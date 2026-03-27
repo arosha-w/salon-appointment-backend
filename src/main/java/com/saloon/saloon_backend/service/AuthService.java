@@ -33,7 +33,7 @@ public class AuthService {
 
         String token = jwtService.generateToken(user.getEmail());
 
-        // ✅ FIXED: Return all required fields
+        //  FIXED: Return all required fields
         return new LoginResponse(
                 token,
                 user.getRole().name(),

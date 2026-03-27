@@ -110,13 +110,13 @@ public class SlotLockService {
             response.setSuccess(true);
             response.setMessage("Slot locked successfully for 3 minutes");
 
-            System.out.println("✅ Slot locked: " + request.getStylistId() +
+            System.out.println("Slot locked: " + request.getStylistId() +
                     " | " + date + " " + time + " | Session: " + request.getSessionId());
 
             return response;
 
         } catch (Exception e) {
-            System.err.println("❌ Error locking slot: " + e.getMessage());
+            System.err.println("Error locking slot: " + e.getMessage());
             response.setSuccess(false);
             response.setMessage("Failed to lock slot: " + e.getMessage());
             return response;
@@ -138,11 +138,11 @@ public class SlotLockService {
             }
 
             if (!locks.isEmpty()) {
-                System.out.println("✅ Released " + locks.size() + " locks for session: " + sessionId);
+                System.out.println("Released " + locks.size() + " locks for session: " + sessionId);
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Error releasing locks: " + e.getMessage());
+            System.err.println("Error releasing locks: " + e.getMessage());
         }
     }
 

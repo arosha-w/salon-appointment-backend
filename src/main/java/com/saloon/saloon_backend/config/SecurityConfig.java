@@ -70,5 +70,4 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    // ❌ REMOVED - passwordEncoder bean already exists in PasswordConfig.java
 }

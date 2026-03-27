@@ -66,7 +66,7 @@ public class ClientBookingService {
             stylists = List.of(userRepository.findById(stylistId)
                     .orElseThrow(() -> new IllegalArgumentException("Stylist not found")));
         } else {
-            // ✅ Now UserRole resolves correctly
+            //  Now UserRole resolves correctly
             stylists = userRepository.findByRole(UserRole.STYLIST);
         }
 
@@ -243,13 +243,13 @@ public class ClientBookingService {
     @Transactional
     private String generateRecommendation(double utilizationRate, PeakHourPrediction prediction) {
         if (utilizationRate >= 0.9) {
-            return "⚠️ Very busy - expect wait times";
+            return "Very busy - expect wait times";
         } else if (utilizationRate >= 0.7) {
-            return "🔥 Popular time - book early";
+            return "Popular time - book early";
         } else if (utilizationRate >= 0.4) {
-            return "✅ Good time to book";
+            return "Good time to book";
         } else {
-            return "⭐ Best time - quiet period";
+            return "Best time - quiet period";
         }
     }
 

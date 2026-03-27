@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor  // ✅ ADD THIS
+@NoArgsConstructor  // ADD THIS
 @AllArgsConstructor
 public class AvailableSlotDTO {
     private String time;

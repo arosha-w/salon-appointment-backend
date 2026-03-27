@@ -149,7 +149,7 @@ public class AppointmentService {
         appointment.setStylist(stylist);
         appointment.setStartTs(start);
         appointment.setEndTs(end);
-        appointment.setStatus("BOOKED"); // ✅ CHANGED: Start as BOOKED instead of CONFIRMED
+        appointment.setStatus("BOOKED"); //  CHANGED: Start as BOOKED instead of CONFIRMED
         appointment.setTotalPrice(totalPrice);
 
         Appointment savedAppointment = appointmentRepository.save(appointment);
@@ -168,7 +168,7 @@ public class AppointmentService {
                 savedAppointment.getId(),
                 savedAppointment.getStartTs().toString(),
                 savedAppointment.getEndTs().toString(),
-                "BOOKED" // ✅ Return BOOKED status
+                "BOOKED" //  Return BOOKED status
         );
     }
 
@@ -282,7 +282,7 @@ public class AppointmentService {
         // 8. Save
         appointmentRepository.save(appointment);
 
-        System.out.println("✅ Appointment " + appointmentId + " rescheduled to " + newStartTs);
+        System.out.println(" Appointment " + appointmentId + " rescheduled to " + newStartTs);
     }
 
     /**

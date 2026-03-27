@@ -76,7 +76,7 @@ public class ClientController {
         return ResponseEntity.ok(clientBookingService.getPeakHoursInfo());
     }
 
-    // ✅ PUBLIC: anyone can fetch stylists (NO token required)
+    //  PUBLIC: anyone can fetch stylists (NO token required)
     @Transactional
     @GetMapping("/stylists")
     public ResponseEntity<List<StylistDTO>> getAllStylists() {
@@ -89,7 +89,7 @@ public class ClientController {
         return ResponseEntity.ok(dtos);
     }
 
-    // ✅ CLIENT ONLY: Get client stats
+    //  CLIENT ONLY: Get client stats
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/stats")
     @Transactional
@@ -124,7 +124,7 @@ public class ClientController {
     }
 
     /**
-     * ✅ FIXED: Get appointment history (COMPLETED + CANCELLED appointments)
+     *  FIXED: Get appointment history (COMPLETED + CANCELLED appointments)
      * This shows all past appointments regardless of status
      */
     @PreAuthorize("hasRole('CLIENT')")
@@ -135,7 +135,7 @@ public class ClientController {
         User client = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found"));
 
-        // ✅ FIX: Get COMPLETED AND CANCELLED appointments
+        //  FIX: Get COMPLETED AND CANCELLED appointments
         List<Appointment> historyAppointments = appointmentRepository.findByClientId(client.getId())
                 .stream()
                 .filter(a ->
@@ -152,7 +152,7 @@ public class ClientController {
         return ResponseEntity.ok(history);
     }
 
-    // ✅ CLIENT ONLY: Get client profile
+    //  CLIENT ONLY: Get client profile
     @PreAuthorize("hasRole('CLIENT')")
     @GetMapping("/client/profile")
     public ResponseEntity<Map<String, Object>> getClientProfile(Authentication auth) {

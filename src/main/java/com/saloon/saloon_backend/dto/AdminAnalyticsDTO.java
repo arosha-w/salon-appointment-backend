@@ -10,7 +10,7 @@ public class AdminAnalyticsDTO {
     private List<StylistPerformance> topStylists;
     private List<ServicePerformance> servicePerformance;
     private ClientInsights clientInsights;
-    private List<DailyRevenue> revenueTrend; // ✅ FIXED: removed space
+    private List<DailyRevenue> revenueTrend; //  FIXED: removed space
 
     @Data
     public static class RevenueStats {

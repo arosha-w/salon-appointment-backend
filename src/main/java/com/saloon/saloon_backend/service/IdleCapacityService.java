@@ -44,7 +44,7 @@ public class IdleCapacityService {
     @Transactional
     public void analyzeIdleCapacity() {
         LocalDate today = LocalDate.now();
-        System.out.println("🔍 Analyzing idle capacity for: " + today);
+        System.out.println("Analyzing idle capacity for: " + today);
 
         List<User> stylists = userRepository.findByRole(UserRole.valueOf("STYLIST"));
 
@@ -88,7 +88,7 @@ public class IdleCapacityService {
 
                     alertRepository.save(alert);
 
-                    System.out.println("⚠️ Idle capacity alert: " + stylist.getFullName() +
+                    System.out.println("Idle capacity alert: " + stylist.getFullName() +
                             " | " + date + " " + hour + ":00 | " + idlePercentage + "% idle");
                 }
             }

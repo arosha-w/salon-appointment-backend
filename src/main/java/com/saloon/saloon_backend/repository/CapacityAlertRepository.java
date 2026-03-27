@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface CapacityAlertRepository extends JpaRepository<CapacityAlert, Long> {
 
-    // ✅ ADDED (this fixes your error)
+    //  ADDED (this fixes your error)
     List<CapacityAlert> findByIsResolvedFalseOrderByCreatedAtDesc();
 
     // Existing methods (kept as-is)

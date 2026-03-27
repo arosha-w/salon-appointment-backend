@@ -16,7 +16,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT a FROM Appointment a ORDER BY a.startTs DESC")
     List<Appointment> findAllOrderByStartTsDesc();
 
-    // ✅ FIXED: Use CAST and CURRENT_DATE without DATE() function
+    //  FIXED: Use CAST and CURRENT_DATE without DATE() function
     @Query("SELECT a FROM Appointment a WHERE CAST(a.startTs AS date) = CURRENT_DATE ORDER BY a.startTs ASC")
     List<Appointment> findTodayAppointments();
 
@@ -29,7 +29,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT a FROM Appointment a WHERE a.startTs BETWEEN :start AND :end ORDER BY a.startTs DESC")
     List<Appointment> findByDateRange(@Param("start") OffsetDateTime start, @Param("end") OffsetDateTime end);
 
-    // ✅ FIXED: Use CAST and CURRENT_DATE
+    //  FIXED: Use CAST and CURRENT_DATE
     @Query("SELECT COALESCE(SUM(a.totalPrice), 0) FROM Appointment a WHERE CAST(a.startTs AS date) = CURRENT_DATE AND a.status = 'COMPLETED'")
     BigDecimal getTodayRevenue();
 
@@ -59,7 +59,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("end") OffsetDateTime end
     );
 
-    // ✅ ADDED: count bookings for capacity monitoring (this fixes your error)
+    //  ADDED: count bookings for capacity monitoring (this fixes your error)
     @Query("""
         SELECT COUNT(a)
         FROM Appointment a

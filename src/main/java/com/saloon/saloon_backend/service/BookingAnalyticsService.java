@@ -46,7 +46,7 @@ public class BookingAnalyticsService {
     @Scheduled(cron = "0 0 1 * * *")
     @Transactional
     public void calculateDailyAnalytics() {
-        System.out.println("🔄 Starting daily analytics calculation...");
+        System.out.println("Starting daily analytics calculation...");
 
         LocalDate yesterday = LocalDate.now().minusDays(1);
 
@@ -61,7 +61,7 @@ public class BookingAnalyticsService {
                 .collect(Collectors.toList());
 
         if (appointments.isEmpty()) {
-            System.out.println("ℹ️ No completed appointments found for " + yesterday);
+            System.out.println("No completed appointments found for " + yesterday);
             return;
         }
 
@@ -111,7 +111,7 @@ public class BookingAnalyticsService {
         // Calculate daily stats
         calculateDailyStats(yesterday, appointments);
 
-        System.out.println("✅ Daily analytics calculation completed for " + yesterday);
+        System.out.println("Daily analytics calculation completed for " + yesterday);
     }
 
     /**
@@ -166,14 +166,14 @@ public class BookingAnalyticsService {
     @Scheduled(cron = "0 0 2 * * SUN")
     @Transactional
     public void predictPeakHours() {
-        System.out.println("🔄 Starting peak hour prediction...");
+        System.out.println("Starting peak hour prediction...");
 
         // Get last 30 days of analytics
         LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
         List<BookingAnalytics> historicalData = analyticsRepository.findByDateAfter(thirtyDaysAgo);
 
         if (historicalData.isEmpty()) {
-            System.out.println("ℹ️ Not enough historical data for predictions");
+            System.out.println("Not enough historical data for predictions");
             return;
         }
 
@@ -223,7 +223,7 @@ public class BookingAnalyticsService {
             predictionRepository.save(prediction);
         });
 
-        System.out.println("✅ Peak hour prediction completed. Predictions saved: " + grouped.size());
+        System.out.println("Peak hour prediction completed. Predictions saved: " + grouped.size());
     }
 
     /**
@@ -356,7 +356,7 @@ public class BookingAnalyticsService {
      */
     @Transactional
     public String forceRecalculation() {
-        System.out.println("🔄 Forcing analytics recalculation...");
+        System.out.println("Forcing analytics recalculation...");
 
         // Recalculate last 7 days
         for (int i = 1; i <= 7; i++) {
@@ -378,7 +378,7 @@ public class BookingAnalyticsService {
         // Recalculate predictions
         predictPeakHours();
 
-        return "✅ Analytics recalculation completed for last 7 days";
+        return "Analytics recalculation completed for last 7 days";
     }
 
     /**

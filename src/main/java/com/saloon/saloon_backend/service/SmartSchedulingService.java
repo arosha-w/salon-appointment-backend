@@ -303,9 +303,9 @@ public class SmartSchedulingService {
         // Demand
         String demand = (String) factors.get("demand");
         if ("LOW".equals(demand)) {
-            reason.append("⭐ Quiet time - minimal wait expected. ");
+            reason.append("Quiet time - minimal wait expected. ");
         } else if ("MEDIUM".equals(demand)) {
-            reason.append("✅ Good availability. ");
+            reason.append("Good availability. ");
         } else if ("HIGH".equals(demand)) {
             reason.append("Moderate demand period. ");
         }
@@ -317,7 +317,7 @@ public class SmartSchedulingService {
 
         // Time similarity
         if (factors.containsKey("exactSameTime") && (Boolean) factors.get("exactSameTime")) {
-            reason.append("🎯 Exact same time! ");
+            reason.append("Exact same time! ");
         } else if (factors.containsKey("similarTime") && (Boolean) factors.get("similarTime")) {
             reason.append("Similar time to your preference. ");
         }
@@ -325,14 +325,14 @@ public class SmartSchedulingService {
         // Urgency
         String urgency = (String) factors.get("urgency");
         if ("TOMORROW".equals(urgency)) {
-            reason.append("📅 Available tomorrow! ");
+            reason.append("Available tomorrow! ");
         } else if ("SOON".equals(urgency)) {
             reason.append("Available soon. ");
         }
 
         // Stylist
         if (factors.containsKey("highRatedStylist") && (Boolean) factors.get("highRatedStylist")) {
-            reason.append("⭐ Top-rated stylist. ");
+            reason.append("Top-rated stylist. ");
         }
 
         if (reason.length() == 0) {

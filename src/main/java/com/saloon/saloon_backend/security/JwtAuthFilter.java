@@ -31,7 +31,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // ✅ Do not try to validate JWT for login/register endpoints
+        //  Do not try to validate JWT for login/register endpoints
         String path = request.getServletPath();
         if (path.startsWith("/api/auth/")) {
             filterChain.doFilter(request, response);

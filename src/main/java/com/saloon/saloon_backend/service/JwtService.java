@@ -12,7 +12,7 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    // ✅ Must be 32+ chars for HS256
+    //  Must be 32+ chars for HS256
     private static final String SECRET_KEY =
             "saloon-secret-key-123456-CHANGE-ME-TO-32-CHARS";
 

@@ -5,7 +5,7 @@ public class ClientAppointmentHistoryDTO {
     private String date;
     private String serviceName;
     private String stylistName;
-    private Long stylistId; // ✅ ADD THIS for rebook functionality
+    private Long stylistId; //  ADD THIS for rebook functionality
     private Double amount;
     private String status;
 

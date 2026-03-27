@@ -147,7 +147,7 @@ public class AppointmentController {
     }
 
     /**
-     * ✅ FIXED: Reschedule an appointment
+     *  FIXED: Reschedule an appointment
      * PUT /api/appointments/{id}/reschedule
      *
      * IMPORTANT FIX:

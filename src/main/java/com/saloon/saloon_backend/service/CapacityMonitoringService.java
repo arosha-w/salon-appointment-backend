@@ -45,7 +45,7 @@ public class CapacityMonitoringService {
     @Transactional
     public void monitorCapacity() {
 
-        // ✅ FIXED: no ZoneOffset.plusMinutes() (not supported)
+        //  FIXED: no ZoneOffset.plusMinutes() (not supported)
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.ofHoursMinutes(5, 30));
 
         for (int i = 0; i < 6; i++) {
@@ -76,7 +76,7 @@ public class CapacityMonitoringService {
 
         for (User stylist : stylists) {
 
-            // ✅ FIXED: uses repo method that exists (added earlier)
+            // FIXED: uses repo method that exists (added earlier)
             long bookingCount = appointmentRepository.countBookingsForStylistInTimeRange(
                     stylist.getId(),
                     start,
@@ -168,7 +168,7 @@ public class CapacityMonitoringService {
     @Transactional
     public List<CapacityAlertDTO> getActiveAlerts() {
         return capacityAlertRepository
-                // ✅ Now this compiles because we added it to the repository
+                //  Now this compiles because we added it to the repository
                 .findByIsResolvedFalseOrderByCreatedAtDesc()
                 .stream()
                 .map(this::mapToDTO)
@@ -227,6 +227,6 @@ public class CapacityMonitoringService {
             }
         }
 
-        System.out.println("✅ Slot configurations initialized");
+        System.out.println("Slot configurations initialized");
     }
 }
