@@ -1,58 +1,70 @@
-# Smart Appointment & Capacity Prediction System for Salon
+# Salon Appointment Backend
 
-## Overview
-The Smart Appointment & Capacity Prediction System is designed to streamline the appointment scheduling process for salons and improve the overall customer experience. Leveraging advanced algorithms, this system predicts the capacity of the salon at various times, ensuring optimal resource allocation and minimizing wait times.
+## Project Overview
+The Salon Appointment Backend is a robust and flexible API server designed to manage appointments for salons and spas. It offers a complete solution for scheduling, managing, and tracking salon appointments, allowing for seamless interaction between clients and salon staff.
 
 ## Features
-- **Appointment Scheduling:** Users can book, reschedule, or cancel appointments with ease.
-- **Capacity Predictions:** The system analyzes historical data to forecast capacity and suggest the best times for customers.
-- **Customer Management:** Keep track of customer preferences and history for personalized services.
-- **Reporting:** Generate reports on salon performance, including peak hours, most requested services, and customer demographics.
+- User Authentication and Authorization
+- Appointment Scheduling and Management
+- Notification System for Appointment Reminders
+- Salon and Service Management
+- Analytics Dashboard for Appointment Statistics
+- Support for Multiple Service Providers
 
-## Technologies Used
-- **Backend:** Node.js, Express
+## Tech Stack
+- **Backend:** Node.js, Express.js
 - **Database:** MongoDB
-- **Machine Learning:** Python (scikit-learn)
-- **Frontend:** React.js (if applicable)
+- **Authentication:** JWT (JSON Web Token)
+- **Containerization:** Docker
+- **Testing Framework:** Jest
 
-## Installation
-To get started with the Smart Appointment & Capacity Prediction System:
-1. Clone the repository:
+## Quick Start Guide
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/arosha-w/salon-appointment-backend.git
-   ```
-2. Navigate to the directory:
-   ```bash
    cd salon-appointment-backend
    ```
-3. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
-4. Set up environment variables in a `.env` file.
-5. Start the server:
+3. **Environment Setup:**
+   Create a `.env` file in the root of the project and configure your environment variables.
+4. **Run the application:**
    ```bash
    npm start
    ```
-
-## Usage
-1. **Create an Appointment:** Send a POST request to `/appointments` with user details.
-2. **View Appointments:** Send a GET request to `/appointments` to retrieve all appointments.
-3. **Cancel Appointment:** Send a DELETE request to `/appointments/{id}` to cancel an appointment.
+5. **Access the API:**
+   The API will be available at `http://localhost:3000`.
 
 ## API Endpoints
-- `POST /appointments` - Create a new appointment
-- `GET /appointments` - Retrieve all appointments
-- `DELETE /appointments/{id}` - Cancel an appointment
+- **GET /api/appointments** - Retrieve all appointments
+- **POST /api/appointments** - Create a new appointment
+- **PUT /api/appointments/:id** - Update an existing appointment
+- **DELETE /api/appointments/:id** - Delete an appointment
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Docker Deployment
+1. **Build the Docker image:**
+   ```bash
+   docker build -t salon-appointment-backend .
+   ```
+2. **Run the Docker container:**
+   ```bash
+   docker run -p 3000:3000 salon-appointment-backend
+   ```
+3. **Access the API:**
+   The API will be running inside the Docker container at `http://localhost:3000`.
 
-## Authors
-- Arosha W. (Your Name)
-
-## Acknowledgments
-- Special thanks to the contributors and mentors who guided the development of this system.
+## Troubleshooting Guide
+- **Common Issues:**
+  - Ensure that your MongoDB service is running.
+  - Double-check the environment variables in the `.env` file.
+  - Check for network issues if accessing the API from a different host.
+- **Debugging:**
+  - Use console logs to track the flow of data in the application.
+  - Utilize tools like Postman for API testing and validation.
+  - Refer to logs for any error messages during runtime.
 
 ---
-For any inquiries or contributions, please reach out via [GitHub Issues](https://github.com/arosha-w/salon-appointment-backend/issues).
+
+For more detailed documentation, please refer to the [project wiki](https://github.com/arosha-w/salon-appointment-backend/wiki).
