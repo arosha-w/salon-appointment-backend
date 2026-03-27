@@ -1,70 +1,98 @@
-# Salon Appointment Backend
+# 🛏️ Smart Salon Appointment & Capacity Prediction System - Backend
 
-## Project Overview
-The Salon Appointment Backend is a robust and flexible API server designed to manage appointments for salons and spas. It offers a complete solution for scheduling, managing, and tracking salon appointments, allowing for seamless interaction between clients and salon staff.
+**Version:** 0.0.1-SNAPSHOT  
+**Built with:** Spring Boot 4.0.2 | Java 21 | PostgreSQL | JWT Authentication | Maven
 
-## Features
-- User Authentication and Authorization
-- Appointment Scheduling and Management
-- Notification System for Appointment Reminders
-- Salon and Service Management
-- Analytics Dashboard for Appointment Statistics
-- Support for Multiple Service Providers
-
-## Tech Stack
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Authentication:** JWT (JSON Web Token)
-- **Containerization:** Docker
-- **Testing Framework:** Jest
-
-## Quick Start Guide
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/arosha-w/salon-appointment-backend.git
-   cd salon-appointment-backend
-   ```
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-3. **Environment Setup:**
-   Create a `.env` file in the root of the project and configure your environment variables.
-4. **Run the application:**
-   ```bash
-   npm start
-   ```
-5. **Access the API:**
-   The API will be available at `http://localhost:3000`.
-
-## API Endpoints
-- **GET /api/appointments** - Retrieve all appointments
-- **POST /api/appointments** - Create a new appointment
-- **PUT /api/appointments/:id** - Update an existing appointment
-- **DELETE /api/appointments/:id** - Delete an appointment
-
-## Docker Deployment
-1. **Build the Docker image:**
-   ```bash
-   docker build -t salon-appointment-backend .
-   ```
-2. **Run the Docker container:**
-   ```bash
-   docker run -p 3000:3000 salon-appointment-backend
-   ```
-3. **Access the API:**
-   The API will be running inside the Docker container at `http://localhost:3000`.
-
-## Troubleshooting Guide
-- **Common Issues:**
-  - Ensure that your MongoDB service is running.
-  - Double-check the environment variables in the `.env` file.
-  - Check for network issues if accessing the API from a different host.
-- **Debugging:**
-  - Use console logs to track the flow of data in the application.
-  - Utilize tools like Postman for API testing and validation.
-  - Refer to logs for any error messages during runtime.
+A comprehensive Spring Boot REST API backend for managing salon appointments with intelligent capacity prediction, role-based access control, and advanced analytics.
 
 ---
 
-For more detailed documentation, please refer to the [project wiki](https://github.com/arosha-w/salon-appointment-backend/wiki).
+## 📌 Project Overview
+
+The Smart Salon Appointment Backend is a enterprise-grade REST API built with Spring Boot 4.0.2 and Java 21. It provides:
+
+- ✅ **Smart Appointment Scheduling** - Book, reschedule, and manage appointments with real-time availability
+- ✅ **Capacity Predictions** - Predict salon capacity and recommend optimal booking times
+- ✅ **Role-Based Access Control** - Separate dashboards for Admin, Stylist, and Client roles
+- ✅ **JWT Authentication** - Secure token-based authentication
+- ✅ **Real-time Analytics** - Track peak hours, booking trends, and revenue metrics
+- ✅ **PostgreSQL Database** - Reliable relational data persistence
+- ✅ **RESTful APIs** - 50+ endpoints with full CORS support
+
+---
+
+## ✨ Key Features
+
+### 📅 Appointment Management
+- Create appointments with automatic service pricing and duration calculation
+- Reschedule appointments with availability validation
+- Cancel appointments with status tracking
+- View appointment history and upcoming bookings
+- Smart slot locking to prevent double bookings
+
+### 🎯 Capacity Prediction System
+- Real-time available slot generation for stylists
+- Peak hour analysis (identifies busiest times per day)
+- Booking trend analysis (7, 14, 30-day periods)
+- Stylist workload tracking and performance metrics
+
+### 👥 Multi-Role Dashboards
+- **Admin:** Manage stylists, services, clients, view all appointments, analytics
+- **Stylist:** View assigned appointments, manage client relationships, track performance
+- **Client:** Browse stylists, book appointments, view history, manage bookings
+
+### 🔐 Security Features
+- JWT token-based authentication
+- Password encryption with Bcrypt
+- Role-based authorization (ADMIN, STYLIST, CLIENT)
+- CORS configuration for frontend integration
+- Protected API endpoints
+
+### 📊 Advanced Analytics
+- Peak hour detection
+- Booking trend analysis
+- Revenue tracking
+- Performance metrics
+- Capacity utilization monitoring
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology | Version | Purpose |
+|-----------|---------|---------|
+| Spring Boot | 4.0.2 | REST API Framework |
+| Java | 21+ | Programming Language (LTS) |
+| PostgreSQL | 12+ | Relational Database |
+| Spring Security | 6.x | Authentication & Authorization |
+| Spring Data JPA | Latest | ORM with Hibernate |
+| JWT (JJWT) | 0.11.5 | Token Generation & Validation |
+| Maven | 3.9.0 | Build & Dependency Management |
+| Lombok | Latest | Reduce Boilerplate Code |
+
+---
+
+## 📦 Prerequisites
+
+- **Java 21 or higher** - Spring Boot 4.x requires Java 21+
+  - [Download Java 21](https://www.oracle.com/java/technologies/downloads/)
+  - Verify: `java -version`
+
+- **Maven 3.9.0+** - Build automation tool
+  - [Download Maven](https://maven.apache.org/download.cgi)
+  - Verify: `mvn -version`
+
+- **PostgreSQL 12+** - Database server
+  - [Download PostgreSQL](https://www.postgresql.org/)
+  - Verify: `psql --version`
+
+- **Git** - Version control
+  - [Download Git](https://git-scm.com/)
+
+---
+
+ Clone the Repository
+
+```bash
+git clone https://github.com/arosha-w/salon-appointment-backend.git
+cd salon-appointment-backend
